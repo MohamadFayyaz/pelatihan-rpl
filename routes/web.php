@@ -2,9 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+
 
 Route::get('login', function () {
     return view('login');
@@ -19,7 +17,12 @@ Route::get('/admin/user', function () {
 })->name('user');
 
 
-// untuk produk
+// home & produk
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\HomeController;
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/admin/product', [ProductController::class, 'index'])->name('product');
+
+Route::post('/bayar', [HomeController::class, 'pay'])->name('bayar');
