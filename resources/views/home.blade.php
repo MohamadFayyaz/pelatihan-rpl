@@ -4,7 +4,7 @@
     <section class="container mx-auto my-28">
         <div class="mx-10">
             <div id="list-product" class="grid grid-cols-4 gap-5">
-                @foreach ($products as $item)
+                @foreach ($products as $index => $item)
                     <div
                         class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                         <a href="#">
@@ -20,10 +20,12 @@
                             <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Warna : {{ $item->warna }}</p>
                             <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Harga : {{ $item->harga }}</p>
                             <form>
-                                <input type="hidden" id="product_id" name="product_id" value="{{ $item->id }}">
-                                <input type="hidden" id="harga" name="harga" value="{{ $item->harga }}">
-                                <button id="pay-button"
-                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                <input type="hidden" id="product_id_{{ $index }}" name="product_id"
+                                    value="{{ $item->id }}">
+                                <input type="hidden" id="harga_{{ $index }}" name="harga"
+                                    value="{{ $item->harga }}">
+                                <button id="pay-button_{{ $index }}"
+                                    class="pay-button inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                     Beli Langsung
                                     <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
@@ -45,18 +47,19 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $('#pay-button').click(function(event) {
+        $('.pay-button').click(function(event) {
             event.preventDefault();
-
+            var index = $(this).attr('id').split('_')[1];
             $.post("{{ route('bayar') }}", {
                     _token: '{{ csrf_token() }}',
-                    product_id: $('#product_id').val(),
-                    harga: $('#harga').val(),
+                    product_id: $('#product_id_' + index).val(),
+                    harga: $('#harga_' + index).val(),
                 },
                 function(data, status) {
                     window.snap.pay(data.snap_token, {
                         onSuccess: function(result) {
-                            location.reload();
+                            window.location =
+                                `/bayar/sukses/${data.snap_token}`;
                         },
 
                         onPending: function(result) {

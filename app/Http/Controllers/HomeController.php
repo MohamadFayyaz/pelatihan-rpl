@@ -70,4 +70,14 @@ class HomeController extends Controller
             'snap_token' => $response,
         ]);
     }
+
+    public function pay_success(Request $request)
+    {
+        // update status dari pembayaran berdasarkan snap_token 
+        DB::table('transaksis')->where('snap_token', $request->snap_token)->update([
+            'status' => 'success',
+        ]);
+
+        return redirect('/');
+    }
 }

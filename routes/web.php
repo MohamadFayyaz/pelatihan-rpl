@@ -26,3 +26,4 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/admin/product', [ProductController::class, 'index'])->name('product');
 
 Route::post('/bayar', [HomeController::class, 'pay'])->name('bayar');
+Route::get('/bayar/sukses/{snap_token}', [HomeController::class, 'pay_success'])->name('bayar_sukses');
